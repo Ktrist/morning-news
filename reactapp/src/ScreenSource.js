@@ -10,6 +10,17 @@ function ScreenSource(props) {
   const [sourceList, setSourceList] = useState([])
   const [selectedLang, setSelectedLang] = useState(props.selectedLang)
 
+  useEffect(() => {
+    const findLang = async() => {
+      
+      const reqFind = await fetch(`/user-lang?token=${props.token}`)
+      const resultFind = await reqFind.json()
+
+      setSelectedLang(resultFind.lang)
+    }
+
+    findLang()
+  }, [])
 
   useEffect(() => {
     const APIResultsLoading = async() => {
@@ -29,13 +40,35 @@ function ScreenSource(props) {
     APIResultsLoading()
   }, [selectedLang])
 
+  var updateLang = async (lang) => {
+    setSelectedLang(lang)
+
+    const reqLang = await fetch('/user-lang', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `lang=${lang}&token=${props.token}`
+    })
+  }
+
+  var styleBorderFr = {width:'40px', margin:'10px',cursor:'pointer'}
+
+  if(selectedLang == 'fr'){
+    styleBorderFr.border = '1px solid black'
+  }
+
+  var styleBorderEn = {width:'40px', margin:'10px',cursor:'pointer'}
+
+  if(selectedLang == 'en'){
+    styleBorderEn.border = '1px solid black'
+  }
+
   return (
     <div>
         <Nav/>
        
        <div style={{display:'flex', justifyContent:'center', alignItems:'center'}} className="Banner">
-          <img style={{width:'40px', margin:'10px',cursor:'pointer'}} src='/images/fr.png' onClick={() => setSelectedLang('fr')} />
-          <img style={{width:'40px', margin:'10px',cursor:'pointer'}} src='/images/uk.png' onClick={() => setSelectedLang('en')} /> 
+          <img style={styleBorderFr} src='/images/fr.png' onClick={() => updateLang('fr')} />
+          <img style={styleBorderEn} src='/images/uk.png' onClick={() => updateLang('en')} /> 
         </div>
 
        <div className="HomeThemes">
@@ -62,7 +95,7 @@ function ScreenSource(props) {
 }
 
 function mapStateToProps(state){
-  return {selectedLang: state.selectedLang}
+  return {selectedLang: state.selectedLang, token: state.token}
 }
 
 function mapDispatchToProps(dispatch){

@@ -42,6 +42,16 @@ function ScreenArticlesBySource(props) {
     setVisible(false)
   }
 
+  var saveArticle = async article => {
+    props.addToWishList(article)
+
+    const saveReq = await fetch('/wishlist-article', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `name=${article.title}&content=${article.content}&desc=${article.description}&lang=${props.selectedLang}&img=${article.urlToImage}&token=${props.token}`
+    })
+  }
+
   return (
     <div>
          
@@ -69,7 +79,7 @@ function ScreenArticlesBySource(props) {
                   }
                   actions={[
                       <Icon type="read" key="ellipsis2" onClick={() => showModal(article.title,article.content)} />,
-                      <Icon type="like" key="ellipsis" onClick={()=> {props.addToWishList(article)}} />
+                      <Icon type="like" key="ellipsis" onClick={()=> {saveArticle(article)}} />
                   ]}
                   >
 
@@ -114,7 +124,11 @@ function mapDispatchToProps(dispatch){
   }
 }
 
+function mapStateToProps(state){
+  return {token: state.token, selectedLang: state.selectedLang}
+}
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(ScreenArticlesBySource)
