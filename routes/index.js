@@ -41,6 +41,7 @@ router.post('/sign-up', async function(req,res,next){
       password: SHA256(req.body.passwordFromFront+salt).toString(encBase64),
       token: uid2(32),
       salt: salt,
+      lang: 'fr',
     })
   
     saveUser = await newUser.save()
