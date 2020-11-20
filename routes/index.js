@@ -115,7 +115,7 @@ router.post('/wishlist-article', async function(req, res, next){
 
     var articleSave = await newArticle.save()
 
-    if(articleSave.name){
+    if(articleSave.title){
       result = true
     }
   }
